@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 import random
+import re
 
 from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template, request, url_for
@@ -55,6 +56,20 @@ CARTAS_TAROT_COMPLETAS = [
     {"nombre": "Caballo de Copas", "descripcion": "Romance, propuesta y sensibilidad.", "invertida": "Idealizacion y decepcion.", "imagen": "knight-of-cups.jpg"},
     {"nombre": "Reina de Copas", "descripcion": "Empatia, cuidado y intuicion.", "invertida": "Desborde emocional o manipulacion.", "imagen": "queen-of-cups.jpg"},
     {"nombre": "Rey de Copas", "descripcion": "Madurez emocional y diplomacia.", "invertida": "Distancia afectiva o inestabilidad.", "imagen": "king-of-cups.jpg"},
+    {"nombre": "As de Bastos", "descripcion": "Impulso, iniciativa y chispa creativa.", "invertida": "Falta de energia o bloqueo para empezar.", "imagen": "ace-of-wands.jpg"},
+    {"nombre": "Dos de Bastos", "descripcion": "Vision, decision y expansion.", "invertida": "Miedo a salir de lo conocido.", "imagen": "two-of-wands.jpg"},
+    {"nombre": "Tres de Bastos", "descripcion": "Proyeccion, crecimiento y horizonte abierto.", "invertida": "Demoras o falta de perspectiva.", "imagen": "three-of-wands.jpg"},
+    {"nombre": "Cuatro de Bastos", "descripcion": "Celebracion, estabilidad y logro compartido.", "invertida": "Tension en el hogar o alegria incompleta.", "imagen": "four-of-wands.jpg"},
+    {"nombre": "Cinco de Bastos", "descripcion": "Competencia, friccion y energia dispersa.", "invertida": "Conflicto evitado o tension interna.", "imagen": "five-of-wands.jpg"},
+    {"nombre": "Seis de Bastos", "descripcion": "Reconocimiento, avance y confianza.", "invertida": "Dudas, orgullo herido o validacion externa.", "imagen": "six-of-wands.jpg"},
+    {"nombre": "Siete de Bastos", "descripcion": "Defensa, firmeza y posicion ganada.", "invertida": "Agotamiento o dificultad para sostener limites.", "imagen": "seven-of-wands.jpg"},
+    {"nombre": "Ocho de Bastos", "descripcion": "Movimiento, noticias y rapidez.", "invertida": "Demoras, trabas o mensajes confusos.", "imagen": "eight-of-wands.jpg"},
+    {"nombre": "Nueve de Bastos", "descripcion": "Resistencia, cautela y perseverancia.", "invertida": "Desgaste, desconfianza o guardia excesiva.", "imagen": "nine-of-wands.jpg"},
+    {"nombre": "Diez de Bastos", "descripcion": "Carga, responsabilidad y esfuerzo sostenido.", "invertida": "Sobrecarga, agotamiento o dificultad para soltar peso.", "imagen": "ten-of-wands.jpg"},
+    {"nombre": "Sota de Bastos", "descripcion": "Curiosidad, entusiasmo y exploracion.", "invertida": "Impaciencia o energia inmadura.", "imagen": "page-of-wands.jpg"},
+    {"nombre": "Caballo de Bastos", "descripcion": "Pasion, impulso y accion audaz.", "invertida": "Apuro, inconstancia o choques.", "imagen": "knight-of-wands.jpg"},
+    {"nombre": "Reina de Bastos", "descripcion": "Magnetismo, seguridad y creatividad viva.", "invertida": "Celos, desgaste o inseguridad encubierta.", "imagen": "queen-of-wands.jpg"},
+    {"nombre": "Rey de Bastos", "descripcion": "Liderazgo, vision y poder de accion.", "invertida": "Autoritarismo, impulsividad o ego desmedido.", "imagen": "king-of-wands.jpg"},
     {"nombre": "As de Espadas", "descripcion": "Claridad mental y verdad.", "invertida": "Confusion y bloqueo.", "imagen": "ace-of-swords.jpg"},
     {"nombre": "Dos de Espadas", "descripcion": "Pausa y decision dificil.", "invertida": "Indecision sostenida.", "imagen": "two-of-swords.jpg"},
     {"nombre": "Tres de Espadas", "descripcion": "Dolor, ruptura y verdad dura.", "invertida": "Sanacion y salida del duelo.", "imagen": "three-of-swords.jpg"},
@@ -65,7 +80,9 @@ CARTAS_TAROT_COMPLETAS = [
     {"nombre": "Ocho de Espadas", "descripcion": "Limitacion y miedo.", "invertida": "Liberacion y nueva perspectiva.", "imagen": "eight-of-swords.jpg"},
     {"nombre": "Nueve de Espadas", "descripcion": "Ansiedad y preocupacion intensa.", "invertida": "Alivio gradual.", "imagen": "nine-of-swords.jpg"},
     {"nombre": "Diez de Espadas", "descripcion": "Final doloroso y cierre.", "invertida": "Renacimiento tras tocar fondo.", "imagen": "ten-of-swords.png"},
+    {"nombre": "Sota de Espadas", "descripcion": "Observacion, curiosidad mental y alerta.", "invertida": "Chismes, ansiedad o inmadurez en la comunicacion.", "imagen": "page-of-swords.jpg"},
     {"nombre": "Caballo de Espadas", "descripcion": "Accion rapida y determinacion.", "invertida": "Impulsividad y choque.", "imagen": "knight-of-swords.jpg"},
+    {"nombre": "Reina de Espadas", "descripcion": "Lucidez, criterio y limites claros.", "invertida": "Dureza, distancia o juicio severo.", "imagen": "queen-of-swords.jpg"},
     {"nombre": "Rey de Espadas", "descripcion": "Logica, autoridad y criterio.", "invertida": "Frialdad y dureza.", "imagen": "king-of-swords.jpg"},
     {"nombre": "As de Oros", "descripcion": "Oportunidad concreta y prosperidad.", "invertida": "Oportunidad perdida o atraso.", "imagen": "ace-of-pentacles.jpg"},
     {"nombre": "Dos de Oros", "descripcion": "Equilibrio y adaptacion.", "invertida": "Desorden y sobrecarga.", "imagen": "two-of-pentacles.jpg"},
@@ -76,9 +93,11 @@ CARTAS_TAROT_COMPLETAS = [
     {"nombre": "Siete de Oros", "descripcion": "Espera, evaluacion y paciencia.", "invertida": "Impaciencia o resultados flojos.", "imagen": "seven-of-pentacles.jpg"},
     {"nombre": "Ocho de Oros", "descripcion": "Trabajo, practica y mejora.", "invertida": "Rutina sin foco.", "imagen": "eight-of-pentacles.jpg"},
     {"nombre": "Nueve de Oros", "descripcion": "Autonomia y disfrute de lo logrado.", "invertida": "Dependencia o exceso de confianza.", "imagen": "nine-of-pentacles.jpg"},
+    {"nombre": "Diez de Oros", "descripcion": "Legado, estabilidad y abundancia sostenida.", "invertida": "Tension material o inseguridad en la base.", "imagen": "ten-of-pentacles.jpg"},
     {"nombre": "Sota de Oros", "descripcion": "Aprendizaje y oportunidad practica.", "invertida": "Distraccion o falta de constancia.", "imagen": "page-of-pentacles.jpg"},
     {"nombre": "Caballo de Oros", "descripcion": "Constancia, trabajo y responsabilidad.", "invertida": "Lentitud o terquedad.", "imagen": "knight-of-pentacles.jpg"},
     {"nombre": "Reina de Oros", "descripcion": "Cuidado, estabilidad y abundancia.", "invertida": "Desequilibrio material o desgaste.", "imagen": "queen-of-pentacles.jpg"},
+    {"nombre": "Rey de Oros", "descripcion": "Solidez, dominio material y liderazgo estable.", "invertida": "Control excesivo o apego a lo material.", "imagen": "king-of-pentacles.jpg"},
 ]
 
 
@@ -156,6 +175,73 @@ def generate_openai_text(user_prompt: str, context: str | None = None) -> str:
     return response.output_text.strip()
 
 
+def classify_user_message(mensaje: str) -> str:
+    response = get_openai_client().responses.create(
+        model=OPENAI_MODEL,
+        instructions=(
+            "Clasifica el mensaje del usuario para una app de tarot.\n"
+            "Responde solamente con una palabra: CONSULTA o ACLARAR.\n"
+            "CONSULTA: el usuario expresa una duda, tema, emocion, situacion, decision, "
+            "o pide significado de una carta, aunque no use signos de pregunta.\n"
+            "ACLARAR: el mensaje es ruido, texto sin sentido, demasiado ambiguo, saludo simple, "
+            "o no alcanza para hacer una tirada con criterio."
+        ),
+        input=f"Mensaje del usuario: {mensaje}",
+    )
+    return response.output_text.strip().upper()
+
+
+def es_texto_sin_sentido(mensaje: str) -> bool:
+    limpio = re.sub(r"[^a-zA-ZáéíóúÁÉÍÓÚüÜñÑ]", "", mensaje)
+    if len(limpio) < 4:
+        return True
+    vocales = sum(1 for c in limpio.lower() if c in "aeiouáéíóúü")
+    ratio_vocales = vocales / max(len(limpio), 1)
+    if len(mensaje.split()) == 1 and len(limpio) >= 8 and ratio_vocales < 0.2:
+        return True
+    if len(set(limpio.lower())) <= 3 and len(limpio) >= 6:
+        return True
+    return False
+
+
+def necesita_aclaracion(mensaje: str) -> bool:
+    texto = mensaje.strip()
+    if not texto:
+        return True
+
+    texto_limpio = texto.lower().strip("¿?¡!.,;:()[]{}\"'")
+    saludos = {"hola", "buenas", "buen dia", "buen día", "hey", "holi", "hello"}
+    if texto_limpio in saludos:
+        return True
+
+    if es_texto_sin_sentido(texto):
+        return True
+
+    palabras = [p for p in re.findall(r"\w+", texto_limpio, flags=re.UNICODE) if p]
+    if len(palabras) <= 1 and len(texto_limpio) < 12:
+        return True
+
+    disparadores_consulta = [
+        "amor", "trabajo", "pareja", "dinero", "decision", "decisión", "quiero",
+        "necesito", "siento", "significa", "significado", "deberia", "debería",
+        "conviene", "volver", "relacion", "relación", "futuro", "bloqueo", "energia",
+        "energía", "camino", "cambio", "cambios", "muerte", "carta", "tirada",
+        "pregunta", "claridad", "estoy", "me pasa", "que", "qué", "como", "cómo"
+    ]
+    if "?" in texto or any(trigger in texto_limpio for trigger in disparadores_consulta):
+        return False
+
+    return len(palabras) < 3
+
+
+def build_clarification_message() -> str:
+    return (
+        "Todavia no veo una consulta clara para abrir la tirada.\n"
+        "Contame un poco mas: puede ser sobre amor, trabajo, una decision, un bloqueo o el significado de una carta.\n"
+        "Cuando me des un tema o una pregunta concreta, hago la lectura."
+    )
+
+
 def seleccionar_carta() -> dict:
     carta = random.choice(CARTAS_TAROT_COMPLETAS)
     posicion = random.choice(["normal", "invertida"])
@@ -204,64 +290,35 @@ def chat():
     if not mensaje_usuario:
         return jsonify({"respuesta": "Escribi un mensaje para continuar."}), 400
 
-    if "tirada" in mensaje_usuario.lower():
-        tirada = generar_tirada(3)
-        texto = "Tu tirada de 3 cartas es:\n" + "\n".join(
-            f"- {carta['nombre']} ({carta['posicion']}): {carta['descripcion']}" for carta in tirada
-        )
-        if openai_enabled():
-            context = "Interpreta esta tirada de tarot usando solamente las cartas provistas.\n" + "\n".join(
-                f"- {carta['nombre']} ({carta['posicion']}): {carta['descripcion']}" for carta in tirada
-            )
-            try:
-                lectura = generate_openai_text(mensaje_usuario, context)
-                texto = lectura
-            except Exception:
-                pass
-        return jsonify({"respuesta": texto, "cartas": tirada})
-
-    carta = buscar_carta_por_nombre(mensaje_usuario)
-    if carta is not None:
-        imagen = build_image_url(carta.get("imagen"))
-        respuesta = f"{carta['nombre']}: {carta['descripcion']} Invertida: {carta['invertida']}"
-        if openai_enabled():
-            context = (
-                f"Carta consultada: {carta['nombre']}\n"
-                f"Significado derecho: {carta['descripcion']}\n"
-                f"Significado invertido: {carta['invertida']}\n"
-                "Da una lectura breve y profesional."
-            )
-            try:
-                respuesta = generate_openai_text(mensaje_usuario, context)
-            except Exception:
-                pass
-        return jsonify(
-            {
-                "respuesta": respuesta,
-                "imagen": imagen,
-                "invertida": False,
-            }
-        )
-
+    decision = "CONSULTA"
     if openai_enabled():
         try:
-            respuesta = generate_openai_text(
-                mensaje_usuario,
-                "Responde como tarotista profesional. Si la consulta requiere mas precision, sugeri pedir una tirada.",
+            decision = classify_user_message(mensaje_usuario)
+        except Exception:
+            decision = "ACLARAR" if necesita_aclaracion(mensaje_usuario) else "CONSULTA"
+    else:
+        decision = "ACLARAR" if necesita_aclaracion(mensaje_usuario) else "CONSULTA"
+
+    if decision != "CONSULTA":
+        return jsonify({"respuesta": build_clarification_message(), "accion": "aclarar", "cartas": []})
+
+    tirada = generar_tirada(DEFAULT_TIRADA_CANTIDAD)
+    texto = "Tu tirada de 3 cartas es:\n" + "\n".join(
+        f"- {carta['nombre']} ({carta['posicion']}): {carta['descripcion']}" for carta in tirada
+    )
+    if openai_enabled():
+        context = (
+            "Interpreta esta tirada de tarot usando solamente las cartas provistas.\n"
+            "La consulta del usuario debe guiar la lectura, pero la respuesta siempre tiene que basarse en la tirada.\n"
+            + "\n".join(
+                f"- {carta['nombre']} ({carta['posicion']}): {carta['descripcion']}" for carta in tirada
             )
-            return jsonify({"respuesta": respuesta, "imagen": None, "invertida": False, "usa_openai": True})
+        )
+        try:
+            texto = generate_openai_text(mensaje_usuario, context)
         except Exception:
             pass
-
-    carta = seleccionar_carta()
-    return jsonify(
-        {
-            "respuesta": f"Tu carta es {carta['nombre']} en posicion {carta['posicion']}. {carta['descripcion']}",
-            "imagen": carta["imagen"],
-            "invertida": carta["posicion"] == "invertida",
-            "usa_openai": False,
-        }
-    )
+    return jsonify({"respuesta": texto, "cartas": tirada, "accion": "tirada"})
 
 
 @app.route("/tirada", methods=["POST"])

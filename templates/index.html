@@ -137,14 +137,6 @@
                 <div id="chatBox" class="chat-box"></div>
 
                 <div class="controls">
-                    <div class="reading-mode">
-                        <span class="field-label">Tirada activa</span>
-                        <div class="reading-mode-card">
-                            <strong>Tirada de 3 cartas</strong>
-                            <span>Pasado, presente y proyeccion de la energia.</span>
-                        </div>
-                    </div>
-
                     <div class="chat-input-row solo-row">
                         <label for="userMessage" class="field-label">Tu pregunta (opcional)</label>
                         <input type="text" id="userMessage" placeholder="Ejemplo: quiero claridad sobre amor, trabajo o una decisi&oacute;n importante">
@@ -169,6 +161,7 @@
         const inputField = document.getElementById('userMessage');
         let typingIndicator = null;
         let shuffleIndicator = null;
+        let shuffleStartedAt = 0;
 
         function addMessage(message, sender, imageUrl = null, isInverted = false, cards = []) {
             const article = document.createElement('article');
@@ -259,6 +252,7 @@
                 return;
             }
 
+            shuffleStartedAt = Date.now();
             shuffleIndicator = document.createElement('article');
             shuffleIndicator.className = 'message bot shuffle-message';
             shuffleIndicator.innerHTML = `
@@ -274,23 +268,26 @@
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
-        function hideShuffleIndicator() {
+        async function hideShuffleIndicator() {
             if (!shuffleIndicator) {
                 return;
             }
 
+            const elapsed = Date.now() - shuffleStartedAt;
+            const remaining = Math.max(0, 1100 - elapsed);
+            if (remaining > 0) {
+                await new Promise((resolve) => setTimeout(resolve, remaining));
+            }
+
             shuffleIndicator.remove();
             shuffleIndicator = null;
+            shuffleStartedAt = 0;
         }
 
-        async function sendMessage(userMessage, showShuffle = false) {
+        async function sendMessage(userMessage) {
             addMessage(userMessage, 'user');
             inputField.value = '';
-            if (showShuffle) {
-                showShuffleIndicator();
-            } else {
-                showTypingIndicator();
-            }
+            showTypingIndicator();
 
             try {
                 const response = await fetch('/chat', {
@@ -300,16 +297,19 @@
                 });
 
                 const data = await response.json();
-                hideShuffleIndicator();
                 hideTypingIndicator();
                 if (!response.ok) {
                     addMessage(data.respuesta || 'No se pudo procesar el mensaje.', 'bot');
                     return;
                 }
 
+                if (data.accion === 'tirada') {
+                    showShuffleIndicator();
+                    await hideShuffleIndicator();
+                }
+
                 addMessage(data.respuesta, 'bot', data.imagen, data.invertida, data.cartas || []);
             } catch (error) {
-                hideShuffleIndicator();
                 hideTypingIndicator();
                 addMessage('Error al conectar con el servidor.', 'bot');
             }
@@ -328,7 +328,7 @@
                 });
 
                 const data = await response.json();
-                hideShuffleIndicator();
+                await hideShuffleIndicator();
                 hideTypingIndicator();
                 if (!response.ok) {
                     addMessage(data.error || 'No se pudo generar la tirada.', 'bot');
@@ -337,7 +337,7 @@
 
                 addMessage(`Resultado de la tirada ${tipoTirada}.`, 'bot', null, false, data.tirada || []);
             } catch (error) {
-                hideShuffleIndicator();
+                await hideShuffleIndicator();
                 hideTypingIndicator();
                 addMessage('Error al realizar la tirada.', 'bot');
             }
@@ -346,7 +346,7 @@
         async function handlePrimaryAction() {
             const userMessage = inputField.value.trim();
             if (userMessage) {
-                await sendMessage(userMessage, userMessage.toLowerCase().includes('tirada'));
+                await sendMessage(userMessage);
                 return;
             }
 
