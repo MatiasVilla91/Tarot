@@ -165,7 +165,6 @@ body {
 }
 
 .hero-copy h1,
-.consultation-copy h2,
 .ceremony-panel h2,
 .consultation-header h3 {
     margin: 0;
@@ -181,11 +180,9 @@ body {
 }
 
 .hero-text,
-.consultation-copy p,
 .ritual-list li,
 .testimonial-card p,
 .authority-strip p,
-.benefit-list span,
 .micro-proof,
 .message p,
 .spread-card p {
@@ -323,7 +320,6 @@ body {
 }
 
 .authority-strip span,
-.benefit-list strong,
 .status-pill {
     color: var(--gold-bright);
 }
@@ -334,37 +330,9 @@ body {
 }
 
 .consultation-grid {
-    display: grid;
-    grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.35fr);
-    gap: 24px;
     margin-top: 18px;
     padding: 26px;
     border-radius: 34px;
-}
-
-.consultation-copy {
-    padding: 10px 6px;
-}
-
-.consultation-copy h2 {
-    margin-top: 10px;
-    font-size: 54px;
-    line-height: 0.92;
-}
-
-.benefit-list {
-    display: grid;
-    gap: 14px;
-    margin-top: 22px;
-}
-
-.benefit-list div {
-    padding: 16px 18px;
-}
-
-.benefit-list strong {
-    display: block;
-    margin-bottom: 6px;
 }
 
 .consultation-panel {
@@ -441,6 +409,48 @@ body {
     font-size: 13px;
 }
 
+.session-banner {
+    display: grid;
+    gap: 6px;
+    margin-top: 18px;
+    padding: 14px 16px;
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+}
+
+.session-banner strong {
+    color: var(--gold-bright);
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.session-banner span {
+    color: var(--ink-soft);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.session-banner[data-tone="thinking"] {
+    border-color: rgba(121, 80, 179, 0.34);
+    background: linear-gradient(180deg, rgba(121, 80, 179, 0.16), rgba(255, 255, 255, 0.02));
+}
+
+.session-banner[data-tone="active"] {
+    border-color: rgba(219, 188, 128, 0.34);
+    background: linear-gradient(180deg, rgba(219, 188, 128, 0.12), rgba(255, 255, 255, 0.02));
+}
+
+.session-banner[data-tone="warning"] {
+    border-color: rgba(186, 113, 59, 0.34);
+    background: linear-gradient(180deg, rgba(186, 113, 59, 0.16), rgba(255, 255, 255, 0.02));
+}
+
+.session-banner[data-tone="draft"] {
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
 input,
 select,
 button {
@@ -463,6 +473,17 @@ input::placeholder {
     color: #8b8085;
 }
 
+input:disabled,
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.72;
+}
+
+input:focus {
+    border-color: rgba(219, 188, 128, 0.38);
+    box-shadow: 0 0 0 4px rgba(219, 188, 128, 0.08);
+}
+
 button {
     min-height: 58px;
     padding: 0 22px;
@@ -477,6 +498,7 @@ button {
 
 button:hover,
 .chip:hover,
+.assist-chip:hover,
 .primary-link:hover {
     transform: translateY(-1px);
     box-shadow: 0 16px 32px rgba(0, 0, 0, 0.22);
@@ -500,6 +522,23 @@ button.secondary {
     margin-top: 14px;
 }
 
+.input-assist {
+    display: grid;
+    gap: 10px;
+}
+
+.assist-title {
+    color: var(--ink-faint);
+    font-size: 13px;
+}
+
+.assist-examples {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.assist-chip,
 .chip {
     min-height: auto;
     padding: 10px 14px;
@@ -508,6 +547,11 @@ button.secondary {
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
     font-size: 13px;
+}
+
+.assist-chip {
+    color: var(--ivory);
+    background: rgba(255, 255, 255, 0.03);
 }
 
 .chat-box {
@@ -538,6 +582,7 @@ button.secondary {
 .message.user {
     align-self: flex-end;
     background: var(--user);
+    border-color: rgba(219, 188, 128, 0.18);
 }
 
 .message.bot {
@@ -756,17 +801,12 @@ button.secondary {
 }
 
 @media (max-width: 1080px) {
-    .hero-grid,
-    .consultation-grid {
+    .hero-grid {
         grid-template-columns: 1fr;
     }
 
     .hero-copy h1 {
         max-width: none;
-    }
-
-    .consultation-copy h2 {
-        font-size: 46px;
     }
 }
 
@@ -796,6 +836,7 @@ button.secondary {
     .authority-strip,
     .stats-row,
     .chat-input-row,
+    .assist-examples,
     .spread-row {
         grid-template-columns: 1fr;
     }
@@ -804,7 +845,6 @@ button.secondary {
         font-size: 56px;
     }
 
-    .consultation-copy h2,
     .ceremony-panel h2 {
         font-size: 36px;
     }

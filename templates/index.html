@@ -94,31 +94,6 @@
         </section>
 
         <section class="consultation-grid" id="consulta">
-            <div class="consultation-copy">
-                <p class="section-label">Sala de consulta</p>
-                <h2>Un solo paso claro para empezar.</h2>
-                <p>
-                    La lectura usa una tirada fija de 3 cartas. Si adem&aacute;s escrib&iacute;s una pregunta, la interpretaci&oacute;n toma ese contexto.
-                    Si dej&aacute;s el campo vac&iacute;o, la web genera directamente la tirada. No hay dos acciones distintas:
-                    todo empieza desde el mismo bot&oacute;n principal.
-                </p>
-
-                <div class="benefit-list">
-                    <div>
-                        <strong>M&aacute;s simple</strong>
-                        <span>Una sola acci&oacute;n principal y una sola tirada central.</span>
-                    </div>
-                    <div>
-                        <strong>M&aacute;s claro</strong>
-                        <span>La pregunta es opcional, pero la experiencia siempre empieza igual.</span>
-                    </div>
-                    <div>
-                        <strong>M&aacute;s usable</strong>
-                        <span>La interfaz gu&iacute;a al usuario sin obligarlo a interpretar la l&oacute;gica.</span>
-                    </div>
-                </div>
-            </div>
-
             <section class="consultation-panel">
                 <div class="consultation-header">
                     <div>
@@ -134,6 +109,11 @@
                     <span>3. Toc&aacute; "Iniciar lectura"</span>
                 </div>
 
+                <div class="session-banner" id="sessionBanner">
+                    <strong>Listo para leer</strong>
+                    <span>Tra&eacute; una pregunta concreta o dej&aacute; el campo vac&iacute;o y abrimos la tirada.</span>
+                </div>
+
                 <div id="chatBox" class="chat-box"></div>
 
                 <div class="controls">
@@ -142,8 +122,17 @@
                         <input type="text" id="userMessage" placeholder="Ejemplo: quiero claridad sobre amor, trabajo o una decisi&oacute;n importante">
                     </div>
 
+                    <div class="input-assist">
+                        <span class="assist-title">Prob&aacute; con algo como:</span>
+                        <div class="assist-examples">
+                            <button type="button" class="assist-chip" data-message="Quiero claridad sobre mi relacion actual">Mi relaci&oacute;n actual</button>
+                            <button type="button" class="assist-chip" data-message="Necesito ver qu&eacute; pasa con mi trabajo este mes">Mi trabajo este mes</button>
+                            <button type="button" class="assist-chip" data-message="Hay algo que no estoy viendo en esta decision importante">Una decisi&oacute;n importante</button>
+                        </div>
+                    </div>
+
                     <button id="primaryActionButton" type="button" class="primary-action">Iniciar lectura</button>
-                    <p class="field-hint">Si escrib&iacute;s una consulta, la interpretaci&oacute;n toma ese contexto. Si no, se genera directamente la tirada de 3 cartas.</p>
+                    <p class="field-hint" id="fieldHint">Si escrib&iacute;s una consulta, la interpretaci&oacute;n toma ese contexto. Si no, se genera directamente la tirada de 3 cartas.</p>
                 </div>
 
                 <div class="prompt-chips">
@@ -159,9 +148,32 @@
     <script>
         const chatBox = document.getElementById('chatBox');
         const inputField = document.getElementById('userMessage');
+        const primaryActionButton = document.getElementById('primaryActionButton');
+        const sessionBanner = document.getElementById('sessionBanner');
+        const fieldHint = document.getElementById('fieldHint');
         let typingIndicator = null;
         let shuffleIndicator = null;
         let shuffleStartedAt = 0;
+        let isBusy = false;
+
+        function updateSessionBanner(title, description, tone = 'ready') {
+            sessionBanner.dataset.tone = tone;
+            sessionBanner.innerHTML = `
+                <strong>${title}</strong>
+                <span>${description}</span>
+            `;
+        }
+
+        function updateFieldHint(message) {
+            fieldHint.textContent = message;
+        }
+
+        function setBusyState(nextBusy) {
+            isBusy = nextBusy;
+            primaryActionButton.disabled = nextBusy;
+            inputField.disabled = nextBusy;
+            primaryActionButton.textContent = nextBusy ? 'Leyendo...' : 'Iniciar lectura';
+        }
 
         function addMessage(message, sender, imageUrl = null, isInverted = false, cards = []) {
             const article = document.createElement('article');
@@ -285,8 +297,15 @@
         }
 
         async function sendMessage(userMessage) {
+            if (isBusy) {
+                return;
+            }
+
+            setBusyState(true);
             addMessage(userMessage, 'user');
             inputField.value = '';
+            updateSessionBanner('Escuchando tu consulta', 'Estoy leyendo tu mensaje para ver si ya hay suficiente contexto.', 'thinking');
+            updateFieldHint('Cuanto mas concreta sea tu pregunta, mas afinada va a salir la lectura.');
             showTypingIndicator();
 
             try {
@@ -299,25 +318,45 @@
                 const data = await response.json();
                 hideTypingIndicator();
                 if (!response.ok) {
+                    updateSessionBanner('Se interrumpio la lectura', 'No pude procesar el mensaje. Prob&aacute; de nuevo en unos segundos.', 'warning');
+                    updateFieldHint('Si el problema sigue, prob&aacute; reformular la consulta.');
                     addMessage(data.respuesta || 'No se pudo procesar el mensaje.', 'bot');
                     return;
                 }
 
                 if (data.accion === 'tirada') {
+                    updateSessionBanner('Abriendo la tirada', 'Ya tengo contexto suficiente. Estoy mezclando las cartas.', 'active');
                     showShuffleIndicator();
                     await hideShuffleIndicator();
+                    updateSessionBanner('Lectura entregada', 'Pod&eacute;s profundizar con otra pregunta sobre la misma situacion.', 'ready');
+                    updateFieldHint('Pod&eacute;s escribir una nueva consulta o profundizar sobre la lectura anterior.');
+                } else {
+                    updateSessionBanner('Necesito un poco mas', 'Todavia no hay suficiente contexto para abrir una tirada con criterio.', 'warning');
+                    updateFieldHint('Prob&aacute; contar el tema, la persona o la decision que quer&eacute;s mirar.');
                 }
 
                 addMessage(data.respuesta, 'bot', data.imagen, data.invertida, data.cartas || []);
             } catch (error) {
                 hideTypingIndicator();
+                updateSessionBanner('Sin conexion', 'No pude comunicarme con el servidor en este intento.', 'warning');
+                updateFieldHint('Revis&aacute; la conexion y volve a intentar.');
                 addMessage('Error al conectar con el servidor.', 'bot');
+            } finally {
+                setBusyState(false);
+                inputField.focus();
             }
         }
 
         async function realizarTirada() {
+            if (isBusy) {
+                return;
+            }
+
+            setBusyState(true);
             const tipoTirada = '3 cartas';
             addMessage(`Tirada solicitada: ${tipoTirada}`, 'user');
+            updateSessionBanner('Abriendo la tirada', 'Estoy mezclando las cartas para una lectura general.', 'active');
+            updateFieldHint('Si despues quer&eacute;s, pod&eacute;s escribir una pregunta para profundizar sobre esta lectura.');
             showShuffleIndicator();
 
             try {
@@ -331,15 +370,21 @@
                 await hideShuffleIndicator();
                 hideTypingIndicator();
                 if (!response.ok) {
+                    updateSessionBanner('Se interrumpio la lectura', 'No pude generar la tirada en este momento.', 'warning');
                     addMessage(data.error || 'No se pudo generar la tirada.', 'bot');
                     return;
                 }
 
+                updateSessionBanner('Lectura abierta', 'Ya ten&eacute;s las cartas sobre la mesa. Pod&eacute;s hacer una pregunta para profundizar.', 'ready');
                 addMessage(`Resultado de la tirada ${tipoTirada}.`, 'bot', null, false, data.tirada || []);
             } catch (error) {
                 await hideShuffleIndicator();
                 hideTypingIndicator();
+                updateSessionBanner('Sin conexion', 'No pude comunicarme con el servidor en este intento.', 'warning');
                 addMessage('Error al realizar la tirada.', 'bot');
+            } finally {
+                setBusyState(false);
+                inputField.focus();
             }
         }
 
@@ -353,17 +398,30 @@
             await realizarTirada();
         }
 
-        document.getElementById('primaryActionButton').addEventListener('click', handlePrimaryAction);
+        primaryActionButton.addEventListener('click', handlePrimaryAction);
         document.querySelectorAll('.chip').forEach((chip) => {
             chip.addEventListener('click', () => {
                 inputField.value = chip.dataset.message;
                 handlePrimaryAction();
             });
         });
+        document.querySelectorAll('.assist-chip').forEach((chip) => {
+            chip.addEventListener('click', () => {
+                inputField.value = chip.dataset.message;
+                inputField.focus();
+            });
+        });
         inputField.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
                 event.preventDefault();
                 handlePrimaryAction();
+            }
+        });
+        inputField.addEventListener('input', () => {
+            if (!isBusy && inputField.value.trim()) {
+                updateSessionBanner('Consulta en preparacion', 'Cuando quieras, envi&aacute; la pregunta y veo si ya alcanza para abrir la tirada.', 'draft');
+            } else if (!isBusy) {
+                updateSessionBanner('Listo para leer', 'Tra&eacute; una pregunta concreta o dej&aacute; el campo vac&iacute;o y abrimos la tirada.', 'ready');
             }
         });
 
