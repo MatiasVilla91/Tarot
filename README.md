@@ -29,10 +29,28 @@ Si no definis `OPENAI_API_KEY`, la app sigue funcionando con el fallback local b
 3. Iniciar con `python app.py`.
 4. Abrir `http://127.0.0.1:5000`.
 
+## Deploy
+
+Para deploy en Render o Railway, esta app conviene correrla con Gunicorn.
+
+- Build command: `pip install -r requirements.txt`
+- Start command: `gunicorn app:app`
+
+Variables de entorno recomendadas:
+
+- `OPENAI_API_KEY`
+- `OPENAI_MODEL=gpt-5-mini`
+
+Notas de produccion:
+
+- No subas `.env` al repositorio.
+- Carga las variables desde el panel del proveedor.
+- Si la app va a estar publica, usa una API key nueva o rotada.
+
 ## Endpoints
 
 - `GET /`: interfaz principal.
-- `POST /chat`: devuelve una carta o una respuesta sobre una carta especifica.
+- `POST /chat`: analiza si hay una consulta valida; si la hay, genera una tirada de `3 cartas` y devuelve la lectura.
 - `POST /tirada`: genera una tirada fija de `3 cartas`.
 
 ## Notas
