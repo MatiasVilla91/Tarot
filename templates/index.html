@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Or&aacute;culo de C&aacute;mara | Lecturas de Tarot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="backdrop">
+        <div class="orb orb-one"></div>
+        <div class="orb orb-two"></div>
+        <div class="grid-glow"></div>
+    </div>
+
+    <main class="page-shell">
+        <header class="topbar">
+            <div class="brand-lockup">
+                <span class="brand-seal">OC</span>
+                <div>
+                    <p class="eyebrow">Lecturas confidenciales</p>
+                    <p class="brand-name">Or&aacute;culo de C&aacute;mara</p>
+                </div>
+            </div>
+            <div class="topbar-copy">
+                <span>Sesiones simb&oacute;licas</span>
+                <span>Gu&iacute;a en tiempo real</span>
+                <span>Presencia digital premium</span>
+            </div>
+        </header>
+
+        <section class="hero-grid">
+            <div class="hero-copy">
+                <p class="hero-tag">Tarot estrat&eacute;gico para decisiones con peso</p>
+                <h1>Una presencia ritual, sobria y magn&eacute;tica para convertir curiosidad en consulta.</h1>
+                <p class="hero-text">
+                    Esta experiencia combina autoridad visual, interpretaci&oacute;n simb&oacute;lica y respuesta inmediata.
+                    El objetivo no es parecer amateur: es dar la sensaci&oacute;n de entrar a una sala privada donde cada lectura
+                    tiene contexto, criterio y profundidad.
+                </p>
+
+                <div class="hero-actions">
+                    <a href="#consulta" class="primary-link">Abrir lectura ahora</a>
+                    <p class="micro-proof">Disponible para amor, trabajo, bloqueos, decisiones y cierres de ciclo.</p>
+                </div>
+
+                <div class="stats-row">
+                    <article class="stat-card">
+                        <strong>24/7</strong>
+                        <span>Acceso inmediato a consultas y tiradas.</span>
+                    </article>
+                    <article class="stat-card">
+                        <strong>3 formatos</strong>
+                        <span>Lectura breve, tirada cl&aacute;sica o cruz celta.</span>
+                    </article>
+                    <article class="stat-card">
+                        <strong>Tono guiado</strong>
+                        <span>Respuesta ceremonial, precisa y f&aacute;cil de seguir.</span>
+                    </article>
+                </div>
+            </div>
+
+            <aside class="ceremony-panel">
+                <p class="panel-kicker">Experiencia de autoridad</p>
+                <h2>Lo primero que tiene que transmitir la web</h2>
+                <ul class="ritual-list">
+                    <li>Confianza inmediata en menos de 5 segundos.</li>
+                    <li>Un lenguaje visual serio, no esot&eacute;rico gen&eacute;rico.</li>
+                    <li>Sensaci&oacute;n de exclusividad sin fricci&oacute;n para entrar.</li>
+                </ul>
+                <div class="testimonial-card">
+                    <p>"Entr&eacute; por curiosidad y sent&iacute; que estaba frente a una consultora real, no a un juguete visual."</p>
+                    <span>Lectura privada &middot; Caso demostrativo</span>
+                </div>
+            </aside>
+        </section>
+
+        <section class="authority-strip">
+            <article>
+                <span>Lecturas simb&oacute;licas</span>
+                <p>Interpretaci&oacute;n enfocada en claridad, no en ruido.</p>
+            </article>
+            <article>
+                <span>Dise&ntilde;o de confianza</span>
+                <p>Jerarqu&iacute;a editorial, ritmo visual y se&ntilde;al de autoridad.</p>
+            </article>
+            <article>
+                <span>Conversi&oacute;n natural</span>
+                <p>La consulta principal est&aacute; visible sin sacrificar atm&oacute;sfera.</p>
+            </article>
+        </section>
+
+        <section class="consultation-grid" id="consulta">
+            <div class="consultation-copy">
+                <p class="section-label">Sala de consulta</p>
+                <h2>Un solo paso claro para empezar.</h2>
+                <p>
+                    Eleg&iacute; el tipo de tirada que quer&eacute;s. Si adem&aacute;s escrib&iacute;s una pregunta, la lectura toma ese contexto.
+                    Si dej&aacute;s el campo vac&iacute;o, la web genera directamente la tirada seleccionada. No hay dos acciones distintas:
+                    todo empieza desde el mismo bot&oacute;n principal.
+                </p>
+
+                <div class="benefit-list">
+                    <div>
+                        <strong>M&aacute;s simple</strong>
+                        <span>Una sola acci&oacute;n principal en lugar de dos botones que compiten.</span>
+                    </div>
+                    <div>
+                        <strong>M&aacute;s claro</strong>
+                        <span>La tirada se elige primero y la pregunta es opcional.</span>
+                    </div>
+                    <div>
+                        <strong>M&aacute;s usable</strong>
+                        <span>La interfaz gu&iacute;a al usuario sin obligarlo a interpretar la l&oacute;gica.</span>
+                    </div>
+                </div>
+            </div>
+
+            <section class="consultation-panel">
+                <div class="consultation-header">
+                    <div>
+                        <p class="section-label">Consulta activa</p>
+                        <h3>Inici&aacute; tu lectura</h3>
+                    </div>
+                    <span class="status-pill">Canal abierto</span>
+                </div>
+
+                <div class="flow-explainer">
+                    <span>1. Eleg&iacute; la tirada</span>
+                    <span>2. Escrib&iacute; una pregunta si quer&eacute;s</span>
+                    <span>3. Toc&aacute; "Iniciar lectura"</span>
+                </div>
+
+                <div id="chatBox" class="chat-box"></div>
+
+                <div class="controls">
+                    <div class="spread-row solo-row">
+                        <label for="tipoTirada" class="field-label">Tipo de lectura</label>
+                        <select id="tipoTirada">
+                            {% for tipo in tipos_tirada %}
+                            <option value="{{ tipo }}">{{ tipo|title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="chat-input-row solo-row">
+                        <label for="userMessage" class="field-label">Tu pregunta (opcional)</label>
+                        <input type="text" id="userMessage" placeholder="Ejemplo: quiero claridad sobre amor, trabajo o una decisi&oacute;n importante">
+                    </div>
+
+                    <button id="primaryActionButton" type="button" class="primary-action">Iniciar lectura</button>
+                    <p class="field-hint">Si escrib&iacute;s una consulta, la interpretaci&oacute;n toma ese contexto. Si no, se genera directamente la tirada seleccionada.</p>
+                </div>
+
+                <div class="prompt-chips">
+                    <button type="button" class="chip" data-message="Quiero una tirada para trabajo">Trabajo</button>
+                    <button type="button" class="chip" data-message="Quiero una tirada para amor">Amor</button>
+                    <button type="button" class="chip" data-message="Que significa La Muerte">Cambios</button>
+                    <button type="button" class="chip" data-message="Necesito claridad para tomar una decisi&oacute;n">Decisi&oacute;n</button>
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <script>
+        const chatBox = document.getElementById('chatBox');
+        const inputField = document.getElementById('userMessage');
+        const spreadSelect = document.getElementById('tipoTirada');
+        let typingIndicator = null;
+
+        function addMessage(message, sender, imageUrl = null, isInverted = false, cards = []) {
+            const article = document.createElement('article');
+            article.className = `message ${sender}`;
+
+            if (Array.isArray(cards) && cards.length > 0) {
+                const cardsWrapper = document.createElement('section');
+                cardsWrapper.className = 'message-spread';
+
+                cards.forEach((carta, index) => {
+                    const card = document.createElement('article');
+                    card.className = 'spread-card';
+
+                    const title = document.createElement('h2');
+                    title.textContent = `Carta ${index + 1}: ${carta.nombre}`;
+                    card.appendChild(title);
+
+                    const text = document.createElement('p');
+                    text.textContent = `${carta.posicion}: ${carta.descripcion}`;
+                    card.appendChild(text);
+
+                    if (carta.imagen) {
+                        const image = document.createElement('img');
+                        image.src = carta.imagen;
+                        image.alt = carta.nombre;
+                        image.className = 'card-image';
+                        if (carta.posicion === 'invertida') {
+                            image.classList.add('inverted');
+                        }
+                        card.appendChild(image);
+                    }
+
+                    cardsWrapper.appendChild(card);
+                });
+
+                article.appendChild(cardsWrapper);
+            }
+
+            const text = document.createElement('p');
+            text.textContent = message;
+            article.appendChild(text);
+
+            if (imageUrl) {
+                const image = document.createElement('img');
+                image.src = imageUrl;
+                image.alt = 'Carta del tarot';
+                image.className = 'card-image';
+                if (isInverted) {
+                    image.classList.add('inverted');
+                }
+                article.appendChild(image);
+            }
+
+            chatBox.appendChild(article);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            if (typingIndicator) {
+                return;
+            }
+
+            typingIndicator = document.createElement('article');
+            typingIndicator.className = 'message bot typing-message';
+            typingIndicator.innerHTML = `
+                <div class="typing-shell">
+                    <span class="typing-dot"></span>
+                    <span class="typing-dot"></span>
+                    <span class="typing-dot"></span>
+                </div>
+            `;
+
+            chatBox.appendChild(typingIndicator);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            if (!typingIndicator) {
+                return;
+            }
+
+            typingIndicator.remove();
+            typingIndicator = null;
+        }
+
+        async function sendMessage(userMessage) {
+            addMessage(userMessage, 'user');
+            inputField.value = '';
+            showTypingIndicator();
+
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mensaje: userMessage })
+                });
+
+                const data = await response.json();
+                hideTypingIndicator();
+                if (!response.ok) {
+                    addMessage(data.respuesta || 'No se pudo procesar el mensaje.', 'bot');
+                    return;
+                }
+
+                addMessage(data.respuesta, 'bot', data.imagen, data.invertida, data.cartas || []);
+            } catch (error) {
+                hideTypingIndicator();
+                addMessage('Error al conectar con el servidor.', 'bot');
+            }
+        }
+
+        async function realizarTirada() {
+            const tipoTirada = spreadSelect.value;
+            addMessage(`Tirada solicitada: ${tipoTirada}`, 'user');
+            showTypingIndicator();
+
+            try {
+                const response = await fetch('/tirada', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tipo_tirada: tipoTirada })
+                });
+
+                const data = await response.json();
+                hideTypingIndicator();
+                if (!response.ok) {
+                    addMessage(data.error || 'No se pudo generar la tirada.', 'bot');
+                    return;
+                }
+
+                addMessage(`Resultado de la tirada ${tipoTirada}.`, 'bot', null, false, data.tirada || []);
+            } catch (error) {
+                hideTypingIndicator();
+                addMessage('Error al realizar la tirada.', 'bot');
+            }
+        }
+
+        async function handlePrimaryAction() {
+            const userMessage = inputField.value.trim();
+            if (userMessage) {
+                await sendMessage(userMessage);
+                return;
+            }
+
+            await realizarTirada();
+        }
+
+        document.getElementById('primaryActionButton').addEventListener('click', handlePrimaryAction);
+        document.querySelectorAll('.chip').forEach((chip) => {
+            chip.addEventListener('click', () => {
+                inputField.value = chip.dataset.message;
+                handlePrimaryAction();
+            });
+        });
+        inputField.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                handlePrimaryAction();
+            }
+        });
+
+        addMessage('Elegi una tirada, escribi tu pregunta si queres contexto y despues inicia la lectura.', 'bot');
+    </script>
+</body>
+</html>
