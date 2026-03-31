@@ -425,6 +425,24 @@ body {
     line-height: 1.6;
 }
 
+.reading-mode-card {
+    padding: 16px 18px;
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.reading-mode-card strong {
+    display: block;
+    color: var(--gold-bright);
+    margin-bottom: 4px;
+}
+
+.reading-mode-card span {
+    color: var(--ink-soft);
+    font-size: 14px;
+}
+
 .flow-explainer {
     display: flex;
     flex-wrap: wrap;
@@ -545,6 +563,10 @@ button.secondary {
     max-width: 180px;
 }
 
+.shuffle-message {
+    max-width: 320px;
+}
+
 .typing-shell {
     display: inline-flex;
     align-items: center;
@@ -568,6 +590,50 @@ button.secondary {
 
 .typing-dot:nth-child(3) {
     animation-delay: 0.36s, 0s;
+}
+
+.shuffle-stack {
+    position: relative;
+    width: 118px;
+    height: 100px;
+    margin-bottom: 12px;
+}
+
+.shuffle-card {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 74px;
+    height: 100px;
+    border-radius: 14px;
+    border: 1px solid rgba(245, 219, 155, 0.34);
+    background:
+        radial-gradient(circle at top, rgba(245, 219, 155, 0.22), transparent 42%),
+        linear-gradient(160deg, rgba(121, 80, 179, 0.35), rgba(28, 17, 45, 0.95));
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.28);
+}
+
+.shuffle-card::after {
+    content: "✦";
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: rgba(245, 219, 155, 0.88);
+    font-size: 26px;
+    text-shadow: 0 0 12px rgba(245, 219, 155, 0.3);
+}
+
+.shuffle-card-one {
+    animation: shuffleOne 1.7s ease-in-out infinite;
+}
+
+.shuffle-card-two {
+    animation: shuffleTwo 1.7s ease-in-out infinite;
+}
+
+.shuffle-card-three {
+    animation: shuffleThree 1.7s ease-in-out infinite;
 }
 
 .message p,
@@ -636,6 +702,57 @@ button.secondary {
 
     100% {
         background-position: 100% 50%;
+    }
+}
+
+@keyframes shuffleOne {
+    0%, 100% {
+        transform: translateX(0) rotate(0deg);
+        z-index: 3;
+    }
+
+    33% {
+        transform: translateX(-24px) rotate(-16deg);
+        z-index: 1;
+    }
+
+    66% {
+        transform: translateX(18px) rotate(10deg);
+        z-index: 2;
+    }
+}
+
+@keyframes shuffleTwo {
+    0%, 100% {
+        transform: translateX(0) rotate(0deg);
+        z-index: 2;
+    }
+
+    33% {
+        transform: translateX(20px) rotate(14deg);
+        z-index: 3;
+    }
+
+    66% {
+        transform: translateX(-18px) rotate(-10deg);
+        z-index: 1;
+    }
+}
+
+@keyframes shuffleThree {
+    0%, 100% {
+        transform: translateX(0) rotate(0deg);
+        z-index: 1;
+    }
+
+    33% {
+        transform: translateX(8px) translateY(-4px) rotate(5deg);
+        z-index: 2;
+    }
+
+    66% {
+        transform: translateX(-8px) translateY(2px) rotate(-6deg);
+        z-index: 3;
     }
 }
 

@@ -33,7 +33,7 @@ Si no definis `OPENAI_API_KEY`, la app sigue funcionando con el fallback local b
 
 - `GET /`: interfaz principal.
 - `POST /chat`: devuelve una carta o una respuesta sobre una carta especifica.
-- `POST /tirada`: genera una tirada de `1 carta`, `3 cartas` o `cruz celta`.
+- `POST /tirada`: genera una tirada fija de `3 cartas`.
 
 ## Notas
 

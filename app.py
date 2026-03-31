@@ -82,11 +82,8 @@ CARTAS_TAROT_COMPLETAS = [
 ]
 
 
-TIPOS_TIRADA = {
-    "1 carta": 1,
-    "3 cartas": 3,
-    "cruz celta": 10,
-}
+DEFAULT_TIRADA = "3 cartas"
+DEFAULT_TIRADA_CANTIDAD = 3
 
 
 TAROT_SYSTEM_PROMPT = """
@@ -197,7 +194,7 @@ def buscar_carta_por_nombre(mensaje: str) -> dict | None:
 
 @app.route("/")
 def home():
-    return render_template("index.html", tipos_tirada=sorted(TIPOS_TIRADA.keys(), key=lambda item: TIPOS_TIRADA[item]))
+    return render_template("index.html")
 
 
 @app.route("/chat", methods=["POST"])
@@ -270,11 +267,11 @@ def chat():
 @app.route("/tirada", methods=["POST"])
 def tirada():
     data = request.get_json(silent=True) or {}
-    tipo_tirada = str(data.get("tipo_tirada", "1 carta")).strip().lower()
-    if tipo_tirada not in TIPOS_TIRADA:
-        return jsonify({"error": "Tipo de tirada no reconocido. Usa 1 carta, 3 cartas o cruz celta."}), 400
+    tipo_tirada = str(data.get("tipo_tirada", DEFAULT_TIRADA)).strip().lower()
+    if tipo_tirada and tipo_tirada != DEFAULT_TIRADA:
+        return jsonify({"error": "Esta version usa una tirada fija de 3 cartas."}), 400
 
-    return jsonify({"tirada": generar_tirada(TIPOS_TIRADA[tipo_tirada])})
+    return jsonify({"tirada": generar_tirada(DEFAULT_TIRADA_CANTIDAD)})
 
 
 if __name__ == "__main__":
